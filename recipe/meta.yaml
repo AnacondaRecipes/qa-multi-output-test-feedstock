@@ -1,0 +1,59 @@
+{% set name = "qa-multi-output-test" %}
+{% set version = "0.1.0" %}
+
+package:
+  name: {{ name }}
+  version: {{ version }}
+
+source:
+  path: ..
+
+build:
+  number: 0
+
+about:
+  home: https://example.com
+  summary: "QA multi-output test package with noarch and platform variants"
+  license: MIT
+
+outputs:
+
+  # =========================
+  #  Noarch Python Output
+  # =========================
+  - name: {{ name }}
+    build:
+      noarch: python
+      script: |
+        mkdir -p $SP_DIR/qa_multi_output_test
+        echo "__version__ = '{{ version }}'" > $SP_DIR/qa_multi_output_test/__init__.py
+    requirements:
+      host:
+        - python
+      run:
+        - python
+    test:
+      imports:
+        - qa_multi_output_test
+
+
+  # =========================
+  # Platform-specific Lib
+  # =========================
+  - name: {{ name }}-lib
+    build:
+      script: |
+        mkdir -p $PREFIX/lib  # [unix]
+        echo "dummy shared library" > $PREFIX/lib/libqa_dummy.so  # [linux]
+        echo "dummy shared library" > $PREFIX/lib/libqa_dummy.dylib  # [osx]
+
+        mkdir %LIBRARY_BIN%  # [win]
+        echo dummy dll > %LIBRARY_BIN%\qa_dummy.dll  # [win]
+    requirements:
+      build:
+        - {{ compiler('c') }}  # only needed for platform tagging
+    test:
+      commands:
+        - test -f $PREFIX/lib/libqa_dummy.so  # [linux]
+        - test -f $PREFIX/lib/libqa_dummy.dylib  # [osx]
+        - if exist %LIBRARY_BIN%\qa_dummy.dll (exit 0) else (exit 1)  # [win]
