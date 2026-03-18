@@ -13,20 +13,19 @@ build:
 
 about:
   home: https://example.com
-  summary: "QA multi-output test package with noarch and platform variants"
+  summary: "QA multi-output test package"
   license: MIT
 
 outputs:
 
-  # =========================
-  #  Noarch Python Output
-  # =========================
-  - name: {{ name }}
+  # -------------------------------------------------------
+  # Output 1: Noarch Python package
+  # -------------------------------------------------------
+  - name: {{ name }}-python
     build:
       noarch: python
-      script: |
-        mkdir -p "$SP_DIR/qa_multi_output_test"
-        echo "__version__ = '{{ version }}'" > "$SP_DIR/qa_multi_output_test/__init__.py"
+      script: build-python.sh  # [not win]
+      script: build-python.bat  # [win]
     requirements:
       host:
         - python
@@ -36,40 +35,15 @@ outputs:
       imports:
         - qa_multi_output_test
 
-
-  # =========================
-  # Platform-specific Lib (Unix)
-  # =========================
-  - name: {{ name }}-lib   # [not win]
-    build:                  # [not win]
-      script: |             # [not win]
-        set -euo pipefail
-        mkdir -p "$PREFIX/lib"
-        if [[ "$(uname)" == "Linux" ]]; then
-          echo "dummy" > "$PREFIX/lib/libqa.so"
-        elif [[ "$(uname)" == "Darwin" ]]; then
-          echo "dummy" > "$PREFIX/lib/libqa.dylib"
-        fi
-    requirements:           # [not win]
-      build:                # [not win]
-        - {{ compiler('c') }}   # [not win]
-    test:                   # [not win]
-      commands:             # [not win]
-        - test -f $PREFIX/lib/libqa.so      # [linux]
-        - test -f $PREFIX/lib/libqa.dylib   # [osx]
-
-
-  # =========================
-  # Platform-specific Lib (Windows)
-  # =========================
-  - name: {{ name }}-lib   # [win]
-    build:                  # [win]
-      script: |             # [win]
-        if not exist %LIBRARY_BIN% mkdir %LIBRARY_BIN%
-        echo dummy > %LIBRARY_BIN%\qa.dll
-    requirements:           # [win]
-      build:                # [win]
-        - {{ compiler('c') }}   # [win]
-    test:                   # [win]
-      commands:             # [win]
-        - if exist %LIBRARY_BIN%\qa.dll (exit 0) else (exit 1)  # [win]
+  # -------------------------------------------------------
+  # Output 2: Noarch data package
+  # -------------------------------------------------------
+  - name: {{ name }}-data
+    build:
+      noarch: generic
+      script: build-data.sh   # [not win]
+      script: build-data.bat  # [win]
+    test:
+      commands:
+        - test -f "$PREFIX/share/qa-multi-output-test/data.txt"                           # [not win]
+        - if exist "%PREFIX%\share\qa-multi-output-test\data.txt" (exit 0) else (exit 1)  # [win]
