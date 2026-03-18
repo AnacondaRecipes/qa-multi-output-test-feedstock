@@ -27,8 +27,8 @@ outputs:
       script:
         - mkdir -p $SP_DIR/qa_multi_output_test                                 # [not win]
         - echo "__version__ = '{{ version }}'" > $SP_DIR/qa_multi_output_test/__init__.py  # [not win]
-        - mkdir "%SP_DIR%\qa_multi_output_test" 2>nul || cd .                        # [win]
-        - echo __version__ = '{{ version }}' > "%SP_DIR%\qa_multi_output_test\__init__.py"   # [win]
+        - mkdir "%SP_DIR%/qa_multi_output_test" 2>nul || cd .                        # [win]
+        - echo __version__ = '{{ version }}' > "%SP_DIR%/qa_multi_output_test/__init__.py"   # [win]
     requirements:
       host:
         - python
@@ -47,9 +47,9 @@ outputs:
       script:
         - mkdir -p $PREFIX/share/qa-multi-output-test                              # [not win]
         - echo "dummy data" > $PREFIX/share/qa-multi-output-test/data.txt          # [not win]
-        - mkdir "%SP_DIR%\qa_multi_output_test" 2>nul || cd .                      # [win]
-        - echo dummy data > "%PREFIX%\share\qa-multi-output-test\data.txt"         # [win]
+        - mkdir "%SP_DIR%/qa_multi_output_test" 2>nul || cd .                      # [win]
+        - echo dummy data > "%PREFIX%/share/qa-multi-output-test/data.txt"         # [win]
     test:
       commands:
         - test -f $PREFIX/share/qa-multi-output-test/data.txt                      # [not win]
-        - if exist "%PREFIX%\share\qa-multi-output-test\data.txt" (exit 0) else (exit 1)  # [win]
+        - if exist "%PREFIX%/share/qa-multi-output-test/data.txt" (exit 0) else (exit 1)  # [win]
