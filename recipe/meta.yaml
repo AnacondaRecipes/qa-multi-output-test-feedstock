@@ -25,8 +25,8 @@ outputs:
     build:
       noarch: python
       script: |
-        mkdir -p $SP_DIR/qa_multi_output_test
-        echo "__version__ = '{{ version }}'" > $SP_DIR/qa_multi_output_test/__init__.py
+        mkdir -p "$SP_DIR/qa_multi_output_test"
+        echo "__version__ = '{{ version }}'" > "$SP_DIR/qa_multi_output_test/__init__.py"
     requirements:
       host:
         - python
@@ -38,20 +38,38 @@ outputs:
 
 
   # =========================
-  # Platform-specific Lib
+  # Platform-specific Lib (Unix)
   # =========================
-  - name: {{ name }}-lib
-
-    build:
-      script: build.sh   # [unix]
-      script: bld.bat  # [win]
-
-    requirements:
-      build:
-        - {{ compiler('c') }}
-
-    test:
-      commands:
+  - name: {{ name }}-lib   # [not win]
+    build:                  # [not win]
+      script: |             # [not win]
+        set -euo pipefail
+        mkdir -p "$PREFIX/lib"
+        if [[ "$(uname)" == "Linux" ]]; then
+          echo "dummy" > "$PREFIX/lib/libqa.so"
+        elif [[ "$(uname)" == "Darwin" ]]; then
+          echo "dummy" > "$PREFIX/lib/libqa.dylib"
+        fi
+    requirements:           # [not win]
+      build:                # [not win]
+        - {{ compiler('c') }}   # [not win]
+    test:                   # [not win]
+      commands:             # [not win]
         - test -f $PREFIX/lib/libqa.so      # [linux]
         - test -f $PREFIX/lib/libqa.dylib   # [osx]
+
+
+  # =========================
+  # Platform-specific Lib (Windows)
+  # =========================
+  - name: {{ name }}-lib   # [win]
+    build:                  # [win]
+      script: |             # [win]
+        if not exist %LIBRARY_BIN% mkdir %LIBRARY_BIN%
+        echo dummy > %LIBRARY_BIN%\qa.dll
+    requirements:           # [win]
+      build:                # [win]
+        - {{ compiler('c') }}   # [win]
+    test:                   # [win]
+      commands:             # [win]
         - if exist %LIBRARY_BIN%\qa.dll (exit 0) else (exit 1)  # [win]
