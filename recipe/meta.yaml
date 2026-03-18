@@ -41,19 +41,17 @@ outputs:
   # Platform-specific Lib
   # =========================
   - name: {{ name }}-lib
-    build:
-      script: |
-        mkdir -p $PREFIX/lib  # [unix]
-        echo "dummy shared library" > $PREFIX/lib/libqa_dummy.so  # [linux]
-        echo "dummy shared library" > $PREFIX/lib/libqa_dummy.dylib  # [osx]
 
-        mkdir %LIBRARY_BIN%  # [win]
-        echo dummy dll > %LIBRARY_BIN%\qa_dummy.dll  # [win]
+    build:
+      script: build.sh   # [unix]
+      script: bld.bat    # [win]
+
     requirements:
       build:
-        - {{ compiler('c') }}  # only needed for platform tagging
+        - {{ compiler('c') }}
+
     test:
       commands:
-        - test -f $PREFIX/lib/libqa_dummy.so  # [linux]
-        - test -f $PREFIX/lib/libqa_dummy.dylib  # [osx]
+        - test -f $PREFIX/lib/libqa_dummy.so      # [linux]
+        - test -f $PREFIX/lib/libqa_dummy.dylib   # [osx]
         - if exist %LIBRARY_BIN%\qa_dummy.dll (exit 0) else (exit 1)  # [win]
