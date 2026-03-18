@@ -27,7 +27,7 @@ outputs:
       script:
         - mkdir -p $SP_DIR/qa_multi_output_test                                 # [not win]
         - echo "__version__ = '{{ version }}'" > $SP_DIR/qa_multi_output_test/__init__.py  # [not win]
-        - if not exist "%SP_DIR%\qa_multi_output_test" mkdir "%SP_DIR%\qa_multi_output_test"  # [win]
+        - mkdir "%SP_DIR%\qa_multi_output_test" 2>nul || cd .                        # [win]
         - echo __version__ = '{{ version }}' > "%SP_DIR%\qa_multi_output_test\__init__.py"   # [win]
     requirements:
       host:
@@ -47,7 +47,7 @@ outputs:
       script:
         - mkdir -p $PREFIX/share/qa-multi-output-test                              # [not win]
         - echo "dummy data" > $PREFIX/share/qa-multi-output-test/data.txt          # [not win]
-        - if not exist "%PREFIX%\share\qa-multi-output-test" mkdir "%PREFIX%\share\qa-multi-output-test"  # [win]
+        - mkdir "%SP_DIR%\qa_multi_output_test" 2>nul || cd .                      # [win]
         - echo dummy data > "%PREFIX%\share\qa-multi-output-test\data.txt"         # [win]
     test:
       commands:
