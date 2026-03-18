@@ -24,8 +24,11 @@ outputs:
   - name: {{ name }}-python
     build:
       noarch: python
-      script: build-python.sh  # [not win]
-      script: build-python.bat  # [win]
+      script:
+        - mkdir -p $SP_DIR/qa_multi_output_test                                 # [not win]
+        - echo "__version__ = '{{ version }}'" > $SP_DIR/qa_multi_output_test/__init__.py  # [not win]
+        - if not exist "%SP_DIR%\qa_multi_output_test" mkdir "%SP_DIR%\qa_multi_output_test"  # [win]
+        - echo __version__ = '{{ version }}' > "%SP_DIR%\qa_multi_output_test\__init__.py"   # [win]
     requirements:
       host:
         - python
@@ -41,9 +44,12 @@ outputs:
   - name: {{ name }}-data
     build:
       noarch: generic
-      script: build-data.sh   # [not win]
-      script: build-data.bat  # [win]
+      script:
+        - mkdir -p $PREFIX/share/qa-multi-output-test                              # [not win]
+        - echo "dummy data" > $PREFIX/share/qa-multi-output-test/data.txt          # [not win]
+        - if not exist "%PREFIX%\share\qa-multi-output-test" mkdir "%PREFIX%\share\qa-multi-output-test"  # [win]
+        - echo dummy data > "%PREFIX%\share\qa-multi-output-test\data.txt"         # [win]
     test:
       commands:
-        - test -f "$PREFIX/share/qa-multi-output-test/data.txt"                           # [not win]
+        - test -f $PREFIX/share/qa-multi-output-test/data.txt                      # [not win]
         - if exist "%PREFIX%\share\qa-multi-output-test\data.txt" (exit 0) else (exit 1)  # [win]
