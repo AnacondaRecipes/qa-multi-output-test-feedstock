@@ -43,8 +43,12 @@ outputs:
   - name: {{ name }}-lib
 
     build:
-      script: build.sh   # [unix]
-      script: bld.bat    # [win]
+      script:
+      - mkdir -p $PREFIX/lib                    # [unix]
+      - echo "dummy" > $PREFIX/lib/libqa.so     # [linux]
+      - echo "dummy" > $PREFIX/lib/libqa.dylib  # [osx]
+      - mkdir %LIBRARY_BIN%                     # [win]
+      - echo dummy > %LIBRARY_BIN%\qa.dll       # [win]
 
     requirements:
       build:
