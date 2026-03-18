@@ -43,12 +43,8 @@ outputs:
   - name: {{ name }}-lib
 
     build:
-      script:
-      - mkdir -p $PREFIX/lib                    # [unix]
-      - echo "dummy" > $PREFIX/lib/libqa.so     # [linux]
-      - echo "dummy" > $PREFIX/lib/libqa.dylib  # [osx]
-      - mkdir %LIBRARY_BIN%                     # [win]
-      - echo dummy > %LIBRARY_BIN%\qa.dll       # [win]
+      script: build.sh   # [unix]
+      script: bld.bat  # [win]
 
     requirements:
       build:
@@ -56,6 +52,6 @@ outputs:
 
     test:
       commands:
-        - test -f $PREFIX/lib/libqa_dummy.so      # [linux]
-        - test -f $PREFIX/lib/libqa_dummy.dylib   # [osx]
-        - if exist %LIBRARY_BIN%\qa_dummy.dll (exit 0) else (exit 1)  # [win]
+        - test -f $PREFIX/lib/libqa.so      # [linux]
+        - test -f $PREFIX/lib/libqa.dylib   # [osx]
+        - if exist %LIBRARY_BIN%\qa.dll (exit 0) else (exit 1)  # [win]

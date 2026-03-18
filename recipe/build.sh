@@ -1,5 +1,10 @@
 #!/bin/bash
-mkdir -p $PREFIX/lib
+set -euo pipefail
 
-echo "dummy shared library" > $PREFIX/lib/libqa_dummy.so   # [linux]
-echo "dummy shared library" > $PREFIX/lib/libqa_dummy.dylib  # [osx]
+mkdir -p "$PREFIX/lib"
+
+if [[ "$(uname)" == "Linux" ]]; then
+    echo "dummy" > "$PREFIX/lib/libqa.so"
+elif [[ "$(uname)" == "Darwin" ]]; then
+    echo "dummy" > "$PREFIX/lib/libqa.dylib"
+fi
