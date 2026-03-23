@@ -19,7 +19,7 @@ outputs:
   # -------------------------------------------------------
   - name: {{ name }}
     build:
-      script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+      noarch: python
 
     requirements:
       host:
@@ -37,6 +37,8 @@ outputs:
   # Output 2: Compatibility alias package
   # -------------------------------------------------------
   - name: qa-qa-multi-output-test-alias
+    build:
+      noarch: generic
     requirements:
       host:
         - python
