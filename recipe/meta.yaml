@@ -6,39 +6,56 @@ package:
   version: {{ version }}
 
 source:
-  path: ..
+  path: ../src   # local dummy source
 
 build:
   number: 0
-
-about:
-  home: https://example.com
-  summary: "QA multi-output test package"
-  license: MIT
+  skip: true  # [py<39]
 
 outputs:
 
   # -------------------------------------------------------
-  # Output 1: Noarch Python package
+  # Output 1: Main package (like typing_extensions)
   # -------------------------------------------------------
-  - name: {{ name }}-python
+  - name: {{ name }}
     build:
-      noarch: python
+      script: {{ PYTHON }} -m pip install . --no-deps --no-build-isolation -vv
+
+    requirements:
+      host:
+        - python
+        - pip
+        - setuptools
+      run:
+        - python
+
+    test:
+      imports:
+        - qa-multi-output-test
+
+  # -------------------------------------------------------
+  # Output 2: Compatibility alias package
+  # -------------------------------------------------------
+  - name: qa-qa-multi-output-test-alias
     requirements:
       host:
         - python
       run:
         - python
-    test:
-      imports:
-        - qa_multi_output_test
+        - {{ pin_subpackage(name, exact=True) }}
 
-  # -------------------------------------------------------
-  # Output 2: Noarch data package
-  # -------------------------------------------------------
-  - name: {{ name }}-data
-    build:
-      noarch: generic
     test:
+      requires:
+        - pip
       commands:
-        - echo "qa-multi-output-test-data installed successfully"
+        - pip check
+
+about:
+  home: https://example.com/qa-multi-output-test
+  license: MIT
+  summary: "Dummy multi-output package mimicking typing_extensions"
+  description: |
+    This is a dummy package used for testing multi-output feedstocks.
+    It mimics the structure of typing_extensions with a main package
+    and a compatibility alias output.
+
