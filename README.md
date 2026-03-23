@@ -1,6 +1,8 @@
 # qa-multi-output-test-feedstock
 
-This is a dummy Conda feedstock used to test building a package with multiple outputs, including noarch variants and platform-specific variants.
+This is a dummy package used for testing multi-output feedstocks.
+It mimics the structure of typing_extensions with a main package
+and a compatibility alias output.
 
 The package installs a simple command that prints:
 
