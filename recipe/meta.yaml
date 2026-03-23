@@ -24,11 +24,6 @@ outputs:
   - name: {{ name }}-python
     build:
       noarch: python
-      script:
-        - mkdir -p $SP_DIR/qa_multi_output_test                                 # [not win]
-        - echo "__version__ = '{{ version }}'" > $SP_DIR/qa_multi_output_test/__init__.py  # [not win]
-        - mkdir "%SP_DIR%/qa_multi_output_test" 2>nul || cd .                        # [win]
-        - echo __version__ = '{{ version }}' > "%SP_DIR%/qa_multi_output_test/__init__.py"   # [win]
     requirements:
       host:
         - python
