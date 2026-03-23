@@ -9,7 +9,7 @@ source:
   path: ../src   # local dummy source
 
 build:
-  number: 0
+  number: 1
   skip: true  # [py<39]
 
 outputs:
