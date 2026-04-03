@@ -15,12 +15,11 @@ build:
 outputs:
 
   # -------------------------------------------------------
-  # Output 1: noarch Python package
+  # Output 1: Main package (like typing_extensions)
   # -------------------------------------------------------
   - name: {{ name }}
     build:
       noarch: python
-      script: python -m pip install --no-deps --no-build-isolation --ignore-installed .
 
     requirements:
       host:
@@ -35,28 +34,11 @@ outputs:
         - qa-multi-output-test
 
   # -------------------------------------------------------
-  # Output 2: Platform-specific library
+  # Output 2: Compatibility alias package
   # -------------------------------------------------------
-  - name: {{ name }}-lib
+  - name: qa-qa-multi-output-test-alias
     build:
-    requirements:
-      host:
-        - python
-      run:
-        - python
-        - {{ pin_subpackage(name, exact=True) }}
-
-    test:
-      requires:
-        - pip
-      commands:
-        - pip check
-
-  # -------------------------------------------------------
-  # Output 3: Platform-specific CLI
-  # -------------------------------------------------------
-  - name: {{ name }}-cli
-    build:
+      noarch: generic
     requirements:
       host:
         - python
@@ -73,8 +55,8 @@ outputs:
 about:
   home: https://example.com/qa-multi-output-test
   license: MIT
-  summary: "Dummy multi-output package for QA testing"
+  summary: "Dummy multi-output package mimicking typing_extensions"
   description: |
     This is a dummy package used for testing multi-output feedstocks.
-    It has a noarch Python package, a platform-specific library,
-    and a platform-specific CLI output.
+    It mimics the structure of typing_extensions with a main package
+    and a compatibility alias output.
